@@ -1,0 +1,412 @@
+/* =============================================
+   SIMULADOR DE LOTERIA — Cassino / Sorte / Apostas
+   Estética: Las Vegas noir — vermelho, preto, dourado
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+/* ── Variáveis ── */
+:root {
+  --preto:        #0a0a0a;
+  --preto-2:      #111111;
+  --surface:      #161616;
+  --surface-2:    #1e1e1e;
+  --vermelho:     #c0152a;
+  --vermelho-viv: #e8192f;
+  --vermelho-dim: rgba(232, 25, 47, 0.18);
+  --ouro:         #d4a017;
+  --ouro-claro:   #f0c040;
+  --ouro-dim:     rgba(212, 160, 23, 0.15);
+  --ouro-brilho:  rgba(240, 192, 64, 0.35);
+  --branco:       #f5f0e8;
+  --cinza:        #888070;
+  --border-ouro:  rgba(212, 160, 23, 0.3);
+  --border-verm:  rgba(192, 21, 42, 0.4);
+  --radius:       8px;
+  --radius-lg:    14px;
+  --shadow-ouro:  0 0 24px rgba(212, 160, 23, 0.22);
+  --shadow-verm:  0 0 24px rgba(192, 21, 42, 0.3);
+  --transition:   0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+/* ── Body: feltro de cassino ── */
+body {
+  font-family: 'Rajdhani', 'Trebuchet MS', sans-serif;
+  font-weight: 500;
+  background-color: var(--preto);
+  color: var(--branco);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+
+  /* Padrão de feltro losangular */
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.013) 0px,
+      rgba(255,255,255,0.013) 1px,
+      transparent 1px,
+      transparent 18px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255,255,255,0.013) 0px,
+      rgba(255,255,255,0.013) 1px,
+      transparent 1px,
+      transparent 18px
+    ),
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(192,21,42,0.12) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 35% at 50% 100%, rgba(212,160,23,0.07) 0%, transparent 60%);
+  background-color: var(--preto);
+}
+
+/* Vinheta nas bordas */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, rgba(0,0,0,0.75) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Partículas douradas flutuantes */
+body::after {
+  content: '◆ ♠ ◆ ♥ ◆ ♣ ◆ ♦ ◆';
+  position: fixed;
+  bottom: -2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.1rem;
+  letter-spacing: 1.5rem;
+  color: rgba(212, 160, 23, 0.12);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 0;
+  animation: drift 18s linear infinite;
+}
+
+@keyframes drift {
+  from { transform: translateX(-50%) translateY(0); opacity: 0.12; }
+  50%  { opacity: 0.22; }
+  to   { transform: translateX(-50%) translateY(-100vh); opacity: 0; }
+}
+
+/* ── Heading: marquee de cassino ── */
+h1 {
+  font-family: 'Cinzel Decorative', 'Georgia', serif;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  margin-bottom: 2.5rem;
+  position: relative;
+  z-index: 1;
+
+  /* Texto dourado com brilho */
+  background: linear-gradient(180deg, var(--ouro-claro) 0%, var(--ouro) 45%, #a07010 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+
+  filter: drop-shadow(0 1px 8px rgba(212,160,23,0.45));
+  animation: titulo-brilho 4s ease-in-out infinite;
+}
+
+@keyframes titulo-brilho {
+  0%, 100% { filter: drop-shadow(0 1px 8px rgba(212,160,23,0.4)); }
+  50%       { filter: drop-shadow(0 1px 18px rgba(240,192,64,0.75)); }
+}
+
+/* Naipes decorativos em torno do título */
+h1::before {
+  content: '♠  ♥  ♦  ♣';
+  display: block;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.6em;
+  text-align: center;
+  -webkit-text-fill-color: var(--vermelho-viv);
+  color: var(--vermelho-viv);
+  background: none;
+  filter: none;
+  margin-bottom: 0.5rem;
+  animation: naipes 3s ease-in-out infinite;
+}
+
+@keyframes naipes {
+  0%, 100% { opacity: 0.7; }
+  50%       { opacity: 1; }
+}
+
+/* Linha ornamental sob o título */
+h1::after {
+  content: '';
+  display: block;
+  width: 180px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ouro), var(--vermelho-viv), var(--ouro), transparent);
+  margin: 0.8rem auto 0;
+  animation: linha-brilho 3s ease-in-out infinite;
+}
+
+@keyframes linha-brilho {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
+}
+
+/* ── Labels ── */
+label, Label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ouro);
+  margin-bottom: 0.45rem;
+  margin-top: 1.3rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Inputs — estilo chip de cassino ── */
+input[type="number"] {
+  display: block;
+  width: 100%;
+  max-width: 380px;
+  padding: 0.8rem 1.1rem 0.8rem 2.6rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border-ouro);
+  border-radius: var(--radius);
+  color: var(--ouro-claro);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+  outline: none;
+  position: relative;
+  z-index: 1;
+  -moz-appearance: textfield;
+
+  /* Borda dupla: efeito moldura de chip */
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04), 0 2px 8px rgba(0,0,0,0.4);
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+input[type="number"]:focus {
+  border-color: var(--ouro);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px var(--ouro-dim), inset 0 0 0 1px rgba(240,192,64,0.1), var(--shadow-ouro);
+}
+
+input[type="number"]:hover:not(:focus) {
+  border-color: rgba(212, 160, 23, 0.55);
+}
+
+/* Símbolo $ antes do input */
+label + input[type="number"] { position: relative; }
+
+/* ── Botão: dado rolando ── */
+button {
+  display: block;
+  width: 100%;
+  max-width: 380px;
+  margin-top: 2.2rem;
+  padding: 1rem 1.5rem;
+  background: var(--vermelho);
+  color: #ffffff;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid rgba(240,192,64,0.55);
+  border-radius: var(--radius);
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition);
+
+  box-shadow:
+    0 4px 0 #7a0d1a,
+    0 6px 20px rgba(192,21,42,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+/* Reflexo no botão */
+button::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 45%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Dados decorativos no botão */
+button::after {
+  content: '🎲  CALCULAR CHANCES  🎲';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.92rem;
+  letter-spacing: 0.08em;
+  color: #fff;
+}
+
+/* Esconde texto original do botão com o pseudo-elemento */
+button { color: transparent; }
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 0 #7a0d1a,
+    0 10px 28px rgba(192,21,42,0.55),
+    0 0 18px rgba(240,192,64,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+button:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 #7a0d1a,
+    0 2px 10px rgba(192,21,42,0.4);
+}
+
+/* Pulso de atenção no botão */
+@keyframes btn-pulse {
+  0%, 100% { box-shadow: 0 4px 0 #7a0d1a, 0 6px 20px rgba(192,21,42,0.45), inset 0 1px 0 rgba(255,255,255,0.12); }
+  50%       { box-shadow: 0 4px 0 #7a0d1a, 0 6px 30px rgba(192,21,42,0.65), 0 0 22px rgba(240,192,64,0.28), inset 0 1px 0 rgba(255,255,255,0.12); }
+}
+
+button { animation: btn-pulse 2.5s ease-in-out infinite; }
+button:hover { animation: none; }
+
+/* ── Resultado: tela de slot machine ── */
+#resultado {
+  width: 100%;
+  max-width: 380px;
+  margin-top: 1.75rem;
+  position: relative;
+  z-index: 1;
+}
+
+#resultado:not(:empty) {
+  background: var(--surface);
+  border: 1px solid var(--border-ouro);
+  border-radius: var(--radius-lg);
+  padding: 1.6rem 1.5rem 1.3rem;
+  position: relative;
+  overflow: hidden;
+  animation: slot-reveal 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+
+  /* Sombra de profundidade */
+  box-shadow:
+    var(--shadow-ouro),
+    inset 0 0 0 1px rgba(255,255,255,0.03),
+    inset 0 1px 0 rgba(212,160,23,0.08);
+}
+
+/* Barra dupla no topo: vermelho + dourado */
+#resultado:not(:empty)::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg,
+    var(--vermelho) 0%,
+    var(--ouro) 25%,
+    var(--vermelho) 50%,
+    var(--ouro) 75%,
+    var(--vermelho) 100%
+  );
+  background-size: 200% 100%;
+  animation: barra-slide 3s linear infinite;
+}
+
+@keyframes barra-slide {
+  from { background-position: 0% 0%; }
+  to   { background-position: 200% 0%; }
+}
+
+/* Naipes de fundo no resultado */
+#resultado:not(:empty)::after {
+  content: '♠♥♦♣';
+  position: absolute;
+  bottom: 0.5rem; right: 0.75rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.3em;
+  color: rgba(212, 160, 23, 0.1);
+  pointer-events: none;
+}
+
+@keyframes slot-reveal {
+  from { opacity: 0; transform: scaleY(0.88) translateY(-8px); transform-origin: top; }
+  to   { opacity: 1; transform: scaleY(1) translateY(0); }
+}
+
+/* ── Tipografia do resultado ── */
+#resultado p,
+#resultado span,
+#resultado div {
+  font-size: 0.95rem;
+  color: var(--cinza);
+  line-height: 1.85;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+#resultado strong,
+#resultado b {
+  color: var(--ouro-claro);
+  font-weight: 700;
+}
+
+#resultado h2,
+#resultado h3 {
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--vermelho-viv);
+  font-size: 1rem;
+  margin-bottom: 0.6rem;
+  letter-spacing: 0.04em;
+}
+
+#resultado hr {
+  border: none;
+  border-top: 1px solid rgba(212, 160, 23, 0.15);
+  margin: 0.9rem 0;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--preto); }
+::-webkit-scrollbar-thumb { background: var(--vermelho); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--vermelho-viv); }
+
+/* ── Cursor personalizado ── */
+body { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ctext y='20' font-size='20'%3E🎴%3C/text%3E%3C/svg%3E") 12 12, crosshair; }
+button { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ctext y='20' font-size='20'%3E🎲%3C/text%3E%3C/svg%3E") 12 12, pointer; }
+
+/* ── Responsivo ── */
+@media (max-width: 480px) {
+  body { padding: 2rem 1rem; }
+  h1 { font-size: 1.4rem; margin-bottom: 2rem; }
+  input[type="number"], button, #resultado { max-width: 100%; }
+  button::after { font-size: 0.78rem; letter-spacing: 0.05em; }
+}
