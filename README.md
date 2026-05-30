@@ -96,3 +96,5 @@ Resultado:
 ## Autor
 
 Desenvolvido como atividade prática de Análise Combinatória.
+
+https://megadaviradasimulator.netlify.app/
