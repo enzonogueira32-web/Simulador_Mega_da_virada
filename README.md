@@ -97,4 +97,4 @@ Resultado:
 
 Desenvolvido como atividade prática de Análise Combinatória.
 
-https://megadaviradasimulator.netlify.app/
+[https://megadaviradasimulator.netlify.app/](https://projetochancecerta.netlify.app/)
